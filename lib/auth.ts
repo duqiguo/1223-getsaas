@@ -1,3 +1,7 @@
+// 必须在最顶部调用，在任何 HTTP 请求之前配置全局代理
+import { configureGlobalProxy, getProxyHttpOptions } from '@/lib/proxy-config'
+configureGlobalProxy()
+
 import { NextAuthOptions } from 'next-auth'
 import { DrizzleAdapter } from '@auth/drizzle-adapter'
 import { db } from '@/lib/db'
@@ -110,6 +114,9 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      httpOptions: getProxyHttpOptions({
+        timeout: 10000,
+      }),
     }),
     CredentialsProvider({
       name: 'credentials',
